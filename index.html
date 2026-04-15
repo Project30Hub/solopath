@@ -1106,6 +1106,7 @@ solopath-store.html
 <!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">
+    <img src="images/logo.png" alt="SOLO PATH Logo" />
     <span class="nav-logo-text">SOLO PATH</span>
   </a>
   <ul class="nav-links">
@@ -1385,14 +1386,14 @@ solopath-store.html
 
   // PRODUCTS DATA
   const products = [
-    { id: 1, name: 'Path Finder Tee', category: 'Tops', price: 450, tag: 'new', sizes: ['S','M','L','XL'], emoji: '👕' },
-    { id: 2, name: 'Solo Cargo Pants', category: 'Bottoms', price: 890, tag: 'hot', sizes: ['S','M','L'], emoji: '👖' },
-    { id: 3, name: 'Stone Step Hoodie', category: 'Tops', price: 750, tag: 'new', sizes: ['M','L','XL'], emoji: '🧥' },
-    { id: 4, name: 'Walk Different Bomber', category: 'Outerwear', price: 1290, tag: 'limited', sizes: ['S','M','L'], emoji: '🧥' },
-    { id: 5, name: 'Lane Breaker Coach', category: 'Outerwear', price: 1100, tag: 'new', sizes: ['M','L','XL'], emoji: '🧥' },
-    { id: 6, name: 'Golden Step Cap', category: 'Accessories', price: 320, tag: null, sizes: ['ONE'], emoji: '🧢' },
-    { id: 7, name: 'Solo Cargos (Olive)', category: 'Bottoms', price: 890, tag: 'hot', sizes: ['S','M','L','XL'], emoji: '👖' },
-    { id: 8, name: 'Pavement Long Sleeve', category: 'Tops', price: 550, tag: null, sizes: ['S','M','L','XL'], emoji: '👕' },
+    { id: 1, name: 'Path Finder Tee', category: 'Tops', price: 450, tag: 'new', sizes: ['S','M','L','XL'], img: 'images/t-shirt1.png' },
+    { id: 2, name: 'Solo Cargo Pants', category: 'Bottoms', price: 890, tag: 'hot', sizes: ['S','M','L'], img: 'images/golf-tee2.png' },
+    { id: 3, name: 'Stone Step Hoodie', category: 'Tops', price: 750, tag: 'new', sizes: ['M','L','XL'], img: 'images/hoodie1.png' },
+    { id: 4, name: 'Walk Different Bomber', category: 'Outerwear', price: 1290, tag: 'limited', sizes: ['S','M','L'], img: 'images/hoodie2.png' },
+    { id: 5, name: 'Lane Breaker Coach', category: 'Outerwear', price: 1100, tag: 'new', sizes: ['M','L','XL'], img: 'images/golf-tee.png' },
+    { id: 6, name: 'Golden Step Cap', category: 'Accessories', price: 320, tag: null, sizes: ['ONE'], img: 'images/cap.png' },
+    { id: 7, name: 'Solo Cargos (Olive)', category: 'Bottoms', price: 890, tag: 'hot', sizes: ['S','M','L','XL'], img: 'images/waterbottle.png' },
+    { id: 8, name: 'Pavement Long Sleeve', category: 'Tops', price: 550, tag: null, sizes: ['S','M','L','XL'], img: 'images/key-chain.png' },
   ];
 
   function renderProducts() {
@@ -1400,10 +1401,12 @@ solopath-store.html
     grid.innerHTML = products.map(p => `
       <div class="product-card fade-up">
         <div class="product-img-wrap">
-          <div class="product-img-placeholder">
-            <div class="product-icon">${p.emoji}</div>
-            <div class="product-code">SP-${String(p.id).padStart(3,'0')}</div>
-          </div>
+          ${p.img ? `<img src="${p.img}" alt="${p.name}" class="product-img">` : `
+            <div class="product-img-placeholder">
+              <div class="product-icon">${p.emoji || ''}</div>
+              <div class="product-code">SP-${String(p.id).padStart(3,'0')}</div>
+            </div>
+          `}
           ${p.tag ? `<span class="product-tag tag-${p.tag}">${p.tag.toUpperCase()}</span>` : ''}
           <div class="product-overlay">
             <button class="quick-add" onclick="addToCart(${p.id})">ADD TO BAG</button>
