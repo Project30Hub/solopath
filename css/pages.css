@@ -70,3 +70,11 @@
   .contact-split{align-items:start}
 }
 @media(min-width:1080px){.look-grid{grid-template-columns:repeat(4,1fr)}}
+
+/* Portrait product photos */
+.card-img{aspect-ratio:4/5}
+.card-img img{padding:3%}
+.pv-img{aspect-ratio:4/5}
+.pv-img img{padding:3%}
+.look{aspect-ratio:4/5}
+.look img{padding:4%}

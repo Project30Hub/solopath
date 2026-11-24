@@ -61,8 +61,10 @@ if (grid) {
 
 // ---------- Product page ----------
 const view = $('#productView');
-if (view) {
-  const p = PRODUCTS.find(x => x.id === params.get('id')) || PRODUCTS[0];
+const foundProduct = PRODUCTS.find(x => x.id === params.get('id'));
+if (view && !foundProduct) location.replace('shop.html');
+if (view && foundProduct) {
+  const p = foundProduct;
   document.title = `${p.name} — SOLO PATH`;
   const drawProduct = () => {
     const size = selectedSize[p.id] || p.sizes[0];
