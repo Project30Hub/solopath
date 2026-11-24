@@ -1,9 +1,8 @@
 {
   "name": "solopath",
-  "version": "1.0.0",
-  "description": "Solo Path Streetwear landing page",
+  "version": "2.0.0",
+  "description": "Solo Path Streetwear storefront",
   "main": "index.html",
   "scripts": {},
-  "author": "",
   "license": "ISC"
 }
