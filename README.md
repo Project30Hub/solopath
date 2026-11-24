@@ -15,6 +15,6 @@ The site ships with PayFast's public sandbox test details. Before going live, ad
 set `sandbox: false` in `js/app.js`, and generate the payment signature on a server.
 
 ## Palette
-Ink `#0f1012` · Sand `#f4ebd9` · Gold `#ffc536` · Moss `#2f8f3c` · Clay `#ff5a36`
+Navy `#1b2340` · Cream `#fff6d8` · Sky `#8ed8ff` · Coral `#ff7a8a` · Mint `#9be7c4` · Lilac `#cbb8ff` · Gold `#ffc536`
 
 © 2026 SOLO PATH STREETWEAR
