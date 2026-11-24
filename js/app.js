@@ -1,62 +1,110 @@
 // ---------- PayFast config ----------
-// These are PayFast's public SANDBOX test details. Swap them for your live
-// merchant details and set sandbox:false when you go live.
-// For live use, generate the payment signature on a server (never in the browser).
-const PAYFAST = {
-  sandbox: true,
-  merchant_id: '10000100',
-  merchant_key: '46f0cd694581a'
-};
+// PayFast's public SANDBOX test details. Replace with your live merchant details
+// and set sandbox:false when you go live. Generate signatures on a server for live use.
+const PAYFAST = { sandbox: true, merchant_id: '10000100', merchant_key: '46f0cd694581a' };
 
 const zar = new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR' });
 const fmt = n => zar.format(n).replace(/\u00a0/g, ' ');
 const $ = s => document.querySelector(s);
+const params = new URLSearchParams(location.search);
 
 let cart = [];
 try { cart = JSON.parse(localStorage.getItem('solopath-cart') || '[]'); } catch (e) { cart = []; }
 const save = () => { try { localStorage.setItem('solopath-cart', JSON.stringify(cart)); } catch (e) {} };
 
-// ---------- Shop ----------
-let activeCat = 'All';
 const selectedSize = {};
+const renderers = [];
+const rerender = () => renderers.forEach(fn => fn());
 
-function renderFilters() {
-  const cats = ['All', ...new Set(PRODUCTS.map(p => p.category))];
-  $('#filters').innerHTML = cats.map(c =>
-    `<button class="chip" role="tab" aria-selected="${c === activeCat}" data-cat="${c}">${c}</button>`).join('');
+// ---------- Product cards ----------
+function cardHTML(p) {
+  const size = selectedSize[p.id] || p.sizes[0];
+  const url = `product.html?id=${p.id}`;
+  return `
+  <article class="card">
+    <a class="card-img" href="${url}" aria-label="View ${p.name}">
+      ${p.tag ? `<span class="tag ${p.tag}">${p.tag}</span>` : ''}
+      <img src="${p.img}" alt="${p.name}" loading="lazy" width="600" height="600">
+    </a>
+    <div class="card-body">
+      <div class="card-cat">${p.category}</div>
+      <h3 class="card-name"><a href="${url}">${p.name}</a></h3>
+      <div class="price">${fmt(p.price)}</div>
+      <div class="sizes" role="group" aria-label="Size for ${p.name}">
+        ${p.sizes.map(s => `<button class="size" data-id="${p.id}" data-size="${s}" aria-pressed="${s === size}">${s === 'ONE' ? 'One size' : s}</button>`).join('')}
+      </div>
+      <button class="add" data-add="${p.id}">Add to bag</button>
+    </div>
+  </article>`;
 }
 
-function renderGrid() {
-  const list = PRODUCTS.filter(p => activeCat === 'All' || p.category === activeCat);
-  $('#grid').innerHTML = list.map(p => {
+// ---------- Shop / featured grid ----------
+let activeCat = params.get('cat') || 'All';
+const grid = $('#grid');
+if (grid) {
+  const limit = +grid.dataset.limit || 0;
+  const filters = $('#filters');
+  const draw = () => {
+    if (filters) {
+      const cats = ['All', ...new Set(PRODUCTS.map(p => p.category))];
+      filters.innerHTML = cats.map(c => `<button class="chip" role="tab" aria-selected="${c === activeCat}" data-cat="${c}">${c}</button>`).join('');
+    }
+    let list = PRODUCTS.filter(p => activeCat === 'All' || p.category === activeCat);
+    if (limit) list = list.slice(0, limit);
+    grid.innerHTML = list.map(cardHTML).join('');
+  };
+  if (filters) filters.addEventListener('click', e => {
+    const b = e.target.closest('[data-cat]'); if (b) { activeCat = b.dataset.cat; draw(); }
+  });
+  renderers.push(draw); draw();
+}
+
+// ---------- Product page ----------
+const view = $('#productView');
+if (view) {
+  const p = PRODUCTS.find(x => x.id === params.get('id')) || PRODUCTS[0];
+  document.title = `${p.name} — SOLO PATH`;
+  const drawProduct = () => {
     const size = selectedSize[p.id] || p.sizes[0];
-    return `
-    <article class="card">
-      <div class="card-img">
-        ${p.tag ? `<span class="tag ${p.tag}">${p.tag}</span>` : ''}
-        <img src="${p.img}" alt="${p.name}" loading="lazy" width="600" height="600">
-      </div>
-      <div class="card-body">
-        <div class="card-cat">${p.category}</div>
-        <h3 class="card-name">${p.name}</h3>
-        <div class="price">${fmt(p.price)}</div>
-        <div class="sizes" role="group" aria-label="Size for ${p.name}">
-          ${p.sizes.map(s => `<button class="size" data-id="${p.id}" data-size="${s}" aria-pressed="${s === size}">${s === 'ONE' ? 'One size' : s}</button>`).join('')}
+    view.innerHTML = `
+      <div class="pv-img"><img src="${p.img}" alt="${p.name}" width="800" height="800"></div>
+      <div class="pv-info">
+        ${p.tag ? `<span class="tag ${p.tag} static">${p.tag}</span>` : ''}
+        <p class="card-cat">${p.category}</p>
+        <h1>${p.name}</h1>
+        <p class="pv-price">${fmt(p.price)}</p>
+        <p class="pv-desc">Part of Drop 01. Bright, comfortable and made to be worn loud, with the gold stepping stones on show.</p>
+        <p class="pv-label">Size</p>
+        <div class="sizes" role="group" aria-label="Size">
+          ${p.sizes.map(s => `<button class="size big" data-id="${p.id}" data-size="${s}" aria-pressed="${s === size}">${s === 'ONE' ? 'One size' : s}</button>`).join('')}
         </div>
-        <button class="add" data-add="${p.id}">Add to bag</button>
-      </div>
-    </article>`;
-  }).join('');
+        <button class="btn btn-coral add-big" data-add="${p.id}">Add to bag</button>
+        <ul class="pv-points"><li>Prices in ZAR</li><li>Secure checkout with PayFast</li><li>Delivery confirmed after checkout</li></ul>
+      </div>`;
+  };
+  renderers.push(drawProduct); drawProduct();
+  const rel = $('#related');
+  if (rel) {
+    const list = PRODUCTS.filter(x => x.id !== p.id).slice(0, 4);
+    const drawRel = () => { rel.innerHTML = list.map(cardHTML).join(''); };
+    renderers.push(drawRel); drawRel();
+  }
 }
 
-$('#filters').addEventListener('click', e => {
-  const b = e.target.closest('[data-cat]'); if (!b) return;
-  activeCat = b.dataset.cat; renderFilters(); renderGrid();
-});
+// ---------- Lookbook ----------
+const look = $('#lookGrid');
+if (look) {
+  look.innerHTML = PRODUCTS.map((p, i) => `
+    <a class="look look-${i % 5}" href="product.html?id=${p.id}">
+      <img src="${p.img}" alt="${p.name}" loading="lazy" width="600" height="600">
+      <span class="look-cap"><b>Look ${String(i + 1).padStart(2, '0')}</b> ${p.name}</span>
+    </a>`).join('');
+}
 
-$('#grid').addEventListener('click', e => {
+// ---------- Delegated clicks (sizes + add to bag) ----------
+document.addEventListener('click', e => {
   const sz = e.target.closest('.size');
-  if (sz) { selectedSize[sz.dataset.id] = sz.dataset.size; renderGrid(); return; }
+  if (sz) { selectedSize[sz.dataset.id] = sz.dataset.size; rerender(); return; }
   const add = e.target.closest('[data-add]');
   if (add) addToCart(add.dataset.add);
 });
@@ -119,12 +167,12 @@ $('#checkout').onclick = () => {
   const items = cart.map(i => ({ ...i, p: PRODUCTS.find(x => x.id === i.id) })).filter(i => i.p);
   if (!items.length) return;
   const total = items.reduce((a, i) => a + i.qty * i.p.price, 0);
-  const base = location.origin + location.pathname;
+  const base = location.origin + '/index.html';
   const fields = {
     merchant_id: PAYFAST.merchant_id,
     merchant_key: PAYFAST.merchant_key,
     return_url: base + '?paid=1',
-    cancel_url: base + '?cancelled=1',
+    cancel_url: location.href.split('?')[0] + '?cancelled=1',
     amount: total.toFixed(2),
     item_name: 'Solo Path order',
     item_description: items.map(i => `${i.qty}x ${i.p.name} (${i.size})`).join(', ').slice(0, 250)
@@ -146,12 +194,12 @@ function toast(msg) {
   clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-$('#joinForm').addEventListener('submit', e => {
-  e.preventDefault(); e.target.reset(); toast('You are on the path. Welcome.');
-});
+const join = $('#joinForm');
+if (join) join.addEventListener('submit', e => { e.preventDefault(); e.target.reset(); toast('You are on the path. Welcome.'); });
+const contact = $('#contactForm');
+if (contact) contact.addEventListener('submit', e => { e.preventDefault(); e.target.reset(); toast('Message sent. Thank you!'); });
 
-const params = new URLSearchParams(location.search);
 if (params.get('paid')) { cart = []; save(); setTimeout(() => toast('Payment received. Thank you!'), 400); history.replaceState({}, '', location.pathname); }
 if (params.get('cancelled')) { setTimeout(() => toast('Checkout cancelled. Your bag is saved.'), 400); history.replaceState({}, '', location.pathname); }
 
-renderFilters(); renderGrid(); renderCart();
+renderCart();

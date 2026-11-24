@@ -11,23 +11,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <link rel="icon" href="images/logo.png">
 <link rel="stylesheet" href="css/styles.css">
+<link rel="stylesheet" href="css/pages.css">
 </head>
-<body>
+<body data-page="home">
 
-<header class="site-header">
-  <a class="brand" href="#top" aria-label="Solo Path home">
-    <img src="images/logo.png" alt="Solo Path" width="120" height="120">
-  </a>
-  <nav class="nav" aria-label="Main">
-    <a href="#story">The Path</a>
-    <a href="#shop">Shop</a>
-    <a href="#drop">Drop 01</a>
-    <a href="#join">Join</a>
-  </nav>
-  <button class="bag-btn" id="bagBtn" aria-label="Open bag">
-    Bag <span class="bag-count" id="bagCount">0</span>
-  </button>
-</header>
+<div id="site-header"></div>
 
 <main id="top">
 
@@ -41,8 +29,8 @@
       <h1>Walk your <span class="own">own</span> path.</h1>
       <p class="lede">One stone at a time. Bright, loud and made for people who don't wait for the crowd.</p>
       <div class="hero-cta">
-        <a class="btn btn-coral" href="#shop">Shop the drop</a>
-        <a class="btn btn-white" href="#story">Our story</a>
+        <a class="btn btn-coral" href="shop.html">Shop the drop</a>
+        <a class="btn btn-white" href="about.html">Our story</a>
       </div>
     </div>
 
@@ -96,10 +84,10 @@
   <!-- SHOP -->
   <section class="panel shop" id="shop">
     <div class="shop-head">
-      <h2 class="section-title">Shop</h2>
-      <div class="filters" id="filters" role="tablist" aria-label="Filter products"></div>
+      <h2 class="section-title">Fresh picks</h2>
+      <a class="btn btn-white" href="shop.html">Shop everything →</a>
     </div>
-    <div class="grid" id="grid" aria-live="polite"></div>
+    <div class="grid" id="grid" data-limit="4" aria-live="polite"></div>
   </section>
 
   <!-- DROP BANNER -->
@@ -110,7 +98,7 @@
         <h2>Sunshine on everything.</h2>
         <p>The first Solo Path collection. Limited runs, and the early pieces won't be restocked.</p>
       </div>
-      <a class="btn btn-ink" href="#shop">Grab yours</a>
+      <a class="btn btn-ink" href="shop.html">Grab yours</a>
     </div>
   </section>
 
@@ -127,29 +115,10 @@
   </section>
 </main>
 
-<footer class="footer">
-  <img src="images/logo.png" alt="Solo Path" width="90" height="90" loading="lazy">
-  <p>© 2026 SOLO PATH STREETWEAR · South Africa · Prices in ZAR</p>
-</footer>
-
-<!-- CART -->
-<div class="overlay" id="overlay"></div>
-<aside class="drawer" id="drawer" aria-label="Shopping bag" aria-hidden="true">
-  <div class="drawer-head">
-    <h2>Your bag</h2>
-    <button class="icon-btn" id="closeBag" aria-label="Close bag">✕</button>
-  </div>
-  <div class="drawer-body" id="cartItems"></div>
-  <div class="drawer-foot">
-    <div class="subtotal"><span>Subtotal</span><strong id="cartTotal">R 0.00</strong></div>
-    <button class="btn btn-coral wide" id="checkout">Checkout with PayFast</button>
-    <p class="fine">Secure payment on PayFast. Delivery calculated after checkout.</p>
-  </div>
-</aside>
-
-<div class="toast" id="toast" role="status"></div>
+<div id="site-footer"></div>
 
 <script src="js/products.js"></script>
+<script src="js/layout.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
