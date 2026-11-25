@@ -87,3 +87,13 @@
 .mock img{width:100%;height:auto;display:block}
 .mock figcaption{padding:12px 16px;font-size:.88rem;border-top:var(--bd)}
 @media(min-width:900px){.mock-grid{grid-template-columns:repeat(2,1fr);gap:22px}}
+
+/* FRONT-BACK mockups */
+.fb-panel{background:var(--sky-soft)}
+.fb-panel .section-title{margin:10px 0 24px}
+.fb-grid{display:grid;gap:18px}
+.fb{margin:0;background:var(--white);border:var(--bd);border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow)}
+.fb img{width:100%;height:auto;display:block}
+.fb figcaption{display:flex;justify-content:space-between;gap:6px 14px;flex-wrap:wrap;padding:12px 18px;border-top:var(--bd);font-size:.9rem}
+.fb figcaption b{font-family:'Bagel Fat One','DM Sans',sans-serif;font-weight:400;font-size:1.15rem}
+@media(min-width:900px){.fb-grid{grid-template-columns:repeat(2,1fr)}.fb:first-child{grid-column:1/-1}}
